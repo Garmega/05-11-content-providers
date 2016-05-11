@@ -3,6 +3,9 @@ package edu.uw.providerdemo;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.UserDictionary;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 this,
                 R.layout.list_item_layout, //item to inflate
                 null, //cursor to show
-                new String[] {UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY}, //fields to display
+                new String[] {WordDB.Words.COL_WORD, WordDB.Words.COL_COUNT}, //fields to display
                 new int[] {R.id.txtItemWord, R.id.txtItemFreq},                           //where to display them
                 0);
         listView.setAdapter(adapter);
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 setFrequency(id, freq+1);
             }
         });
+
+
 
     }
 
@@ -96,12 +101,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         //fields to fetch from the provider
-        String[] projection = {UserDictionary.Words._ID, UserDictionary.Words.WORD, UserDictionary.Words.FREQUENCY};
+        String[] projection = {WordDB.Words._ID, WordDB.Words.COL_WORD, WordDB.Words.COL_COUNT};
 
         //create the CursorLoader to fetch data from the content provider
         CursorLoader loader = new CursorLoader(
                 this,
-                UserDictionary.Words.CONTENT_URI,
+                WordProvider.CONTENT_URI,
                 projection,
                 null, //no filter
                 null,
